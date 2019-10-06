@@ -271,5 +271,173 @@ namespace VMS.DAL
             }
             return statusCode;
         }
+
+        public static TrainerProfile GetTrainerProfile(int profileId)
+        {
+            TrainerProfile trainerProfile=null;
+            
+            using (MySqlConnection con = new MySqlConnection(MvcApplication.conStr))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand("GetTrainerProfile", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.Add("@pProfileId", MySqlDbType.Int32);
+                    cmd.Parameters["@pProfileId"].Value = profileId;
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        if(rdr.Read())
+                        {
+                            trainerProfile = new TrainerProfile();
+                            trainerProfile.ProfileId = profileId;
+                            trainerProfile.ReqId = Convert.ToInt32(rdr["ReqId"].ToString());
+                            trainerProfile.TrainerName = rdr["TrainerName"].ToString();
+                            trainerProfile.VendorId = rdr["VendorId"].ToString();
+                            trainerProfile.SMEId = rdr["SMEId"].ToString();
+                            trainerProfile.Feedback = rdr["Feedback"].ToString();
+                            string rating = rdr["Rating"].ToString();
+                            if (!rating.Equals(""))
+                            {
+                                trainerProfile.Rating = Convert.ToInt32(rdr["Rating"].ToString());
+                            }
+                            else
+                            {
+                                trainerProfile.Rating = 0;
+                            }
+
+                            
+                        }
+                    }
+                }
+            }
+
+            return trainerProfile;
+        }
+
+
+        public static List<string> GetSMEs()
+        {
+            string SME;
+            List<string> SMEs = new List<string>();
+            using (MySqlConnection con = new MySqlConnection(MvcApplication.conStr))
+            {
+                con.Open();
+
+                using (MySqlCommand cmd = new MySqlCommand("GetSMEs", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            SME = rdr["UserId"].ToString();
+                            SMEs.Add(SME);
+                        }
+                    }
+                }
+            }
+
+            return SMEs;
+        }
+
+        public static int SetSME(TrainerProfile trainerProfile)
+        {
+
+            int statusCode = 0;
+            using (MySqlConnection con = new MySqlConnection(MvcApplication.conStr))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SetSME", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@pProfileId", MySqlDbType.Int32);
+                    cmd.Parameters["@pProfileId"].Value = trainerProfile.ProfileId;
+
+                    cmd.Parameters.Add("@pSMEId", MySqlDbType.VarChar, 20);
+                    cmd.Parameters["@pSMEId"].Value = trainerProfile.SMEId;
+
+                    cmd.Parameters.Add("@pStatusCode", MySqlDbType.Int32);
+                    cmd.Parameters["@pStatusCode"].Direction = ParameterDirection.Output;
+
+                    cmd.ExecuteNonQuery();
+                    statusCode = Convert.ToInt32(cmd.Parameters["@pStatusCode"].Value);
+                }
+            }
+            return statusCode;
+        }
+
+        public static List<TrainerProfile> GetTrainerProfilesSME(string SMEId)
+        {
+            TrainerProfile trainerProfile;
+            List<TrainerProfile> trainerProfiles = new List<TrainerProfile>();
+
+            using (MySqlConnection con = new MySqlConnection(MvcApplication.conStr))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand("GetTrainerProfilesSME", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.Add("@pSMEId", MySqlDbType.VarChar,20);
+                    cmd.Parameters["@pSMEId"].Value = SMEId;
+                    using (MySqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            trainerProfile = new TrainerProfile();
+                            trainerProfile.ProfileId = Convert.ToInt32(rdr["ProfileId"].ToString());
+                            trainerProfile.ReqId = Convert.ToInt32(rdr["ReqId"].ToString());
+                            trainerProfile.ReqDesc = rdr["ReqDesc"].ToString();
+                            trainerProfile.TrainerName = rdr["TrainerName"].ToString();
+                            trainerProfile.Feedback = rdr["Feedback"].ToString();
+                            string rating = rdr["Rating"].ToString();
+                            if (!rating.Equals(""))
+                            {
+                                trainerProfile.Rating = Convert.ToInt32(rdr["Rating"].ToString());
+                            }
+                            else
+                            {
+                                trainerProfile.Rating = 0;
+                            }
+
+                            trainerProfiles.Add(trainerProfile);
+                        }
+                    }
+                }
+            }
+
+            return trainerProfiles;
+        }
+
+        public static int SetFeedback(TrainerProfile trainerProfile)
+        {
+
+            int statusCode = 0;
+            using (MySqlConnection con = new MySqlConnection(MvcApplication.conStr))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SetFeedback", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@pProfileId", MySqlDbType.Int32);
+                    cmd.Parameters["@pProfileId"].Value = trainerProfile.ProfileId;
+
+                    cmd.Parameters.Add("@pFeedback", MySqlDbType.VarChar, 100);
+                    cmd.Parameters["@pFeedback"].Value = trainerProfile.Feedback;
+
+                    cmd.Parameters.Add("@pRating", MySqlDbType.Int32);
+                    cmd.Parameters["@pRating"].Value = trainerProfile.Rating;
+
+                    cmd.Parameters.Add("@pStatusCode", MySqlDbType.Int32);
+                    cmd.Parameters["@pStatusCode"].Direction = ParameterDirection.Output;
+
+                    cmd.ExecuteNonQuery();
+                    statusCode = Convert.ToInt32(cmd.Parameters["@pStatusCode"].Value);
+                }
+            }
+            return statusCode;
+        }
+
     }
 }

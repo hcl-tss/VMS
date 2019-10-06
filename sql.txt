@@ -190,15 +190,63 @@ END//
 --Test
 CALL GetTrainerProfilesVendor(1,'vendor1');
 
+--GetTrainerProfile
+DELIMITER //
+DROP PROCEDURE IF EXISTS `GetTrainerProfile`//
+CREATE PROCEDURE GetTrainerProfile(pProfileId INT)
+BEGIN
+	SELECT ProfileId, ReqId, TrainerName, VendorId, SMEId, Feedback, Rating FROM TrainerProfile WHERE ProfileId=pProfileId;
+END//
+--Test
+CALL GetTrainerProfile(1);
+
+--GetSMEs
+DELIMITER //
+DROP PROCEDURE IF EXISTS `GetSMEs`//
+CREATE PROCEDURE GetSMEs()
+BEGIN
+	SELECT UserId FROM AppUser WHERE UserType='S' ORDER BY UserId;
+END//
+--Test
+CALL GetSMEs();
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS `SetSME`//
+CREATE PROCEDURE SetSME(pProfileId INT, pSMEId VARCHAR(20), OUT pStatusCode INT)
+BEGIN
+	DECLARE vCheck INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION SET vCheck=0;
+	SET pStatusCode:=1;
+	SET vCheck:=1;
+	UPDATE TrainerProfile SET SMEId=pSMEId WHERE ProfileId = pProfileId;
+	IF vCheck=0 THEN
+		SET pStatusCode:=0;
+	END IF;
+END;//
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS `SetFeedback`//
+CREATE PROCEDURE SetFeedback(pProfileId INT, pFeedback VARCHAR(100), pRating INT, OUT pStatusCode INT)
+BEGIN
+	DECLARE vCheck INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION SET vCheck=0;
+	SET pStatusCode:=1;
+	SET vCheck:=1;
+	UPDATE TrainerProfile SET Feedback=pFeedback, Rating=pRating WHERE ProfileId = pProfileId;
+	IF vCheck=0 THEN
+		SET pStatusCode:=0;
+	END IF;
+END;//
+
 
 --GetTrainerProfilesSME
 DELIMITER //
 DROP PROCEDURE IF EXISTS `GetTrainerProfilesSME`//
 CREATE PROCEDURE GetTrainerProfilesSME(pSMEId VARCHAR(20))
-BEGINs
-	SELECT TR.ReqId, TR.ReqDesc, TP.ProfileId, TP.TrainerName FROM 
+BEGIN
+	SELECT TR.ReqId, TR.ReqDesc, TP.ProfileId, TP.TrainerName, TP.Feedback, TP.Rating FROM 
 		TrainerReq TR INNER JOIN TrainerProfile TP ON TR.ReqId = TP.ReqId 
-		WHERE TP.SMEId=pSMEId ORDER BY TR.ProfileId;
+		WHERE TP.SMEId=pSMEId ORDER BY ProfileId;
 END//
 --Test
 CALL GetTrainerProfilesSME('sme1');

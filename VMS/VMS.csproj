@@ -238,6 +238,9 @@
     <Content Include="Views\App\ViewTrainerProfilesAdmin.cshtml" />
     <Content Include="Views\App\ViewTrainerProfilesVendor.cshtml" />
     <Content Include="Views\App\AddTrainerProfile.cshtml" />
+    <Content Include="Views\App\SetSMEForm.cshtml" />
+    <Content Include="Views\App\ViewTrainerProfilesSME.cshtml" />
+    <Content Include="Views\App\SetFeedbackForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

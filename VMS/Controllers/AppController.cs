@@ -35,6 +35,14 @@ namespace VMS.Controllers
                 List<TrainerReq> trainerReqs = DBServices.GetTrainerReqs();
                 return View("ViewTrainerReqs", trainerReqs);
             }
+            else if (userType.Equals("S"))
+            {
+                Session["userType"] = userType;
+                Session["userId"] = login.UserId;
+                FormsAuthentication.SetAuthCookie(login.UserId, true);
+                List<TrainerProfile> trainerProfiles = DBServices.GetTrainerProfilesSME(login.UserId);
+                return View("ViewTrainerProfilesSME", trainerProfiles);
+            }
             else
             {
                 ViewBag.ErrMsg = "Invalid Credentials";
@@ -125,7 +133,7 @@ namespace VMS.Controllers
             {
                 string path, directory, fileName;
                 path = Server.MapPath("~");
-                path = Directory.GetParent(Directory.GetParent(path).FullName).FullName;
+                path = Directory.GetParent(path).FullName;
                 if (trainerProfile.Profile != null && trainerProfile.Profile.ContentLength > 0)
                 {
                     directory = path + @"\Profiles\";
@@ -135,6 +143,59 @@ namespace VMS.Controllers
                 }
                 List<TrainerReq> trainerReqs = DBServices.GetTrainerReqs();
                 return View("ViewTrainerReqs", trainerReqs);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("SetSMEForm")]
+        public ActionResult SetSMEForm(string id)
+        {
+            int profileId = Convert.ToInt32(id);
+            TrainerProfile trainerProfile = DBServices.GetTrainerProfile(profileId);
+            trainerProfile.SMEs = DBServices.GetSMEs();
+            return View(trainerProfile);
+        }
+
+        [HttpPost]
+        public ActionResult SetSME(TrainerProfile trainerProfile)
+        {
+            int statusCode = DBServices.SetSME(trainerProfile);
+            if (statusCode == 0)
+            {
+                @ViewBag.ErrTryAgain = "Try Again";
+                trainerProfile.SMEs = DBServices.GetSMEs();
+                return View("SetSMEForm", trainerProfile);
+            }
+            else
+            {
+                List<TrainerReq> trainerReqs = DBServices.GetTrainerReqs();
+                return View("ViewTrainerReqs", trainerReqs);
+            }
+        }
+        [HttpGet]
+        [Route("SetFeedbackForm")]
+        public ActionResult SetFeedbackForm(string id)
+        {
+            int profileId = Convert.ToInt32(id);
+            TrainerProfile trainerProfile = DBServices.GetTrainerProfile(profileId);
+            return View(trainerProfile);
+        }
+
+
+        [HttpPost]
+        public ActionResult SetFeedback(TrainerProfile trainerProfile)
+        {
+            int statusCode = DBServices.SetFeedback(trainerProfile);
+            if (statusCode == 0)
+            {
+                @ViewBag.ErrTryAgain = "Try Again";
+                return View("SetFeedbackForm", trainerProfile);
+            }
+            else
+            {
+                List<TrainerProfile> trainerProfiles = DBServices.GetTrainerProfilesSME(Session["userId"].ToString());
+                return View("ViewTrainerProfilesSME", trainerProfiles);
             }
         }
     }

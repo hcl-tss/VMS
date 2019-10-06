@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VMS.Models.TrainerReq>
+﻿@model IEnumerable<VMS.Models.TrainerProfile>
 
 @{
     Layout = null;
@@ -15,13 +15,12 @@
     @Scripts.Render("~/Scripts")
 </head>
 <body>
-    @if(Session["userType"].ToString()=="A") {
-        <p>
-            @Html.ActionLink("Create New", "TrainerReqForm")
-        </p>
-    }
+   
     <table class="table">
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfileId)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.ReqId)
             </th>
@@ -29,18 +28,23 @@
                 @Html.DisplayNameFor(model => model.ReqDesc)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CutOffDate)
+                @Html.DisplayNameFor(model => model.TrainerName)
             </th>
             <th>
-
+                @Html.DisplayNameFor(model => model.Feedback)
             </th>
             <th>
-
+                @Html.DisplayNameFor(model => model.Rating)
             </th>
+            <th> Profile </th>
+            <th>  </th>
         </tr>
     
     @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProfileId)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ReqId)
             </td>
@@ -48,18 +52,21 @@
                 @Html.DisplayFor(modelItem => item.ReqDesc)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CutOffDate)
+                @Html.DisplayFor(modelItem => item.TrainerName)
             </td>
             <td>
-                @if (Session["userType"].ToString() == "A")
-                {
-                    @Html.ActionLink("Edit", "TrainerReqForm", new { id = item.ReqId })
-                }
+                @Html.DisplayFor(modelItem => item.Feedback)
             </td>
             <td>
-                @Html.ActionLink("View Profiles", "ViewProfiles", new { id=item.ReqId}) 
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                <a href="@item.getProfileLink()"> Download </a>
+            </td>
+            <td>
+                @Html.ActionLink("Give Feedback", "SetFeedbackForm", new { id = item.ProfileId })
+            </td>
 
-            </td>
         </tr>
     }
     
