@@ -1,0 +1,58 @@
+﻿@model IEnumerable<VMS.Models.TrainerReq>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VMS</title>
+</head>
+<body>
+    @if(Session["userType"].ToString()=="A") {
+        <p>
+            @Html.ActionLink("Create New", "TrainerReqForm")
+        </p>
+    }
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ReqId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReqDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CutOffDate)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReqId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReqDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CutOffDate)
+            </td>
+            <td>
+                @if (Session["userType"].ToString() == "A")
+                {
+                    @Html.ActionLink("Edit", "TrainerReqForm", new { id = item.ReqId })
+                }
+                @Html.ActionLink("View Profiles", "ViewProfiles", new { id=item.ReqId}) |
+
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

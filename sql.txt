@@ -1,0 +1,204 @@
+Local:
+DB=VMSDB
+User=VMSAdmin
+Password=vms123
+
+<connectionStrings>
+    <add name="MySqlConnectionString" connectionString="server=localhost;port=3306;uid=vmsadmin;pwd=vms123;database=vmsdb" providerName="MySql.Data.MySqlClient" />
+</connectionStrings>
+
+
+<connectionStrings>
+    <add name="MySqlConnectionString" connectionString="Server=MYSQL5022.site4now.net;Database=db_a4e64a_vms;Uid=a4e64a_vms;Pwd=vms12345" providerName="MySql.Data.MySqlClient" />
+</connectionStrings>
+  
+  
+Hosting:
+Server: MYSQL: mysql5022.site4now.net
+DB:db_a4e64a_vms
+username: a4e64a_vms
+Password: vms12345
+
+
+CREATE TABLE AppUser (
+    UserId VARCHAR(20),
+    UserName VARCHAR(40),
+    Passwd VARCHAR(16),
+    UserType CHAR(1),
+    EMailId VARCHAR(50),
+    Phone CHAR(10),
+    UserActive CHAR(1),
+    CONSTRAINT pKey_AU_UserId PRIMARY KEY (UserId)
+);
+--UserType: Admin='A' SME='S' Vendor='V'
+--UserActive = T/F
+
+INSERT INTO AppUser VALUES('admin','admin','admin','A','admin@hcl.com','123456789','T');
+INSERT INTO AppUser VALUES('sme1','sme1','sme1','S','sme1@hcl.com','123456789','T');
+INSERT INTO AppUser VALUES('sme2','sme2','sme2','S','sme2@hcl.com','123456789','T');
+INSERT INTO AppUser VALUES('sme3','sme3','sme3','S','sme3@hcl.com','123456789','T');
+INSERT INTO AppUser VALUES('vendor1','vendor1','vendor1','V','vendor1@hcl.com','123456789','T');
+INSERT INTO AppUser VALUES('vendor2','vendor2','vendor2','V','vendor2@hcl.com','123456789','T');
+INSERT INTO AppUser VALUES('vendor3','vendor3','vendor3','V','vendor3@hcl.com','123456789','T');
+
+
+
+--GetUserType
+DELIMITER //
+DROP FUNCTION IF EXISTS `GetUserType`//
+CREATE FUNCTION GetUserType(pUserId VARCHAR(20), pPasswd VARCHAR(16)) RETURNS CHAR(1)
+READS SQL DATA
+BEGIN
+	DECLARE vUserType CHAR(1);
+	SELECT UserType	 INTO vUserType FROM AppUser WHERE LOWER(UserId) = LOWER(pUserId) AND Passwd = pPasswd AND UserActive = 'T';
+    IF 	vUserType IS NULL THEN
+		SET vUserType := 'I';
+	END IF;
+	RETURN vUserType;
+END//
+SET GLOBAL log_bin_trust_function_creators = 1;
+--Test
+SELECT GetUserType('admin','admin');
+
+CREATE TABLE TrainerReq (
+	ReqId INT,
+	ReqDesc VARCHAR(100),
+	CutOffDate DATE,
+	CONSTRAINT pKey_TR_ReqId PRIMARY KEY (ReqId)
+);
+
+INSERT INTO TrainerReq VALUES (1, "VMWare Trainer", '2010-10-30');
+INSERT INTO TrainerReq VALUES (2, "Java Trainer", '2010-10-30');
+
+--GetTrainerReqs
+DELIMITER //
+DROP PROCEDURE IF EXISTS `GetTrainerReqs`//
+CREATE PROCEDURE GetTrainerReqs()
+BEGIN
+	SELECT ReqId, ReqDesc, CutOffDate FROM TrainerReq ORDER BY ReqId;
+END//
+--Test
+CALL GetTrainerReqs();
+
+
+--GetTrainerReqs
+DELIMITER //
+DROP PROCEDURE IF EXISTS `GetTrainerReq`//
+CREATE PROCEDURE GetTrainerReq(pReqId INT)
+BEGIN
+	SELECT ReqId, ReqDesc, CutOffDate FROM TrainerReq WHERE ReqId=pReqId;
+END//
+--Test
+CALL GetTrainerReq(1);
+
+
+--AddTrainerReq
+DELIMITER //
+DROP PROCEDURE IF EXISTS `AddTrainerReq`//
+CREATE PROCEDURE AddTrainerReq(OUT pReqId INT, pReqDesc VARCHAR(100), pCutOffDate DATE, OUT pStatusCode INT)
+BEGIN
+	DECLARE vCheck INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION SET vCheck=0;
+	SET pStatusCode:=1;
+	SET vCheck:=1;
+	SELECT MAX(ReqId) INTO pReqId FROM TrainerReq;
+	IF pReqId IS NULL THEN
+		SET pReqId := 1;
+	ELSE
+		SET pReqId := pReqId + 1;
+	END IF;
+	INSERT INTO TrainerReq(ReqId, ReqDesc, CutOffDate) VALUES(pReqId, pReqDesc, pCutOffDate);
+	IF vCheck=0 THEN
+		SET pStatusCode:=0;
+	END IF;
+END;//
+
+
+--EditTrainerReq
+DELIMITER //
+DROP PROCEDURE IF EXISTS `EditTrainerReq`//
+CREATE PROCEDURE EditTrainerReq(pReqId INT, pReqDesc VARCHAR(100), pCutOffDate DATE, OUT pStatusCode INT)
+BEGIN
+	DECLARE vCheck INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION SET vCheck=0;
+	SET pStatusCode:=1;
+	SET vCheck:=1;
+	UPDATE TrainerReq SET ReqDesc=pReqDesc, CutOffDate = pCutOffDate WHERE ReqId = pReqId;
+	IF vCheck=0 THEN
+		SET pStatusCode:=0;
+	END IF;
+END;//
+
+
+CREATE TABLE TrainerProfile (
+	ProfileId INT,
+	ReqId INT,
+	TrainerName VARCHAR(50),
+	VendorId VARCHAR(20),
+	SMEId VARCHAR(20),
+	Feedback VARCHAR(100),
+	Rating INT,
+	CONSTRAINT pKey_TP_ProfileId PRIMARY KEY (ProfileId),
+	CONSTRAINT fKey_TP_ReqId FOREIGN KEY(ReqId) REFERENCES TrainerReq(ReqId),
+	CONSTRAINT fKey_TP_VendorId FOREIGN KEY(VendorId) REFERENCES AppUser(UserId),
+	CONSTRAINT fKey_TP_SMEId FOREIGN KEY(SMEId) REFERENCES AppUser(UserId)
+);
+
+INSERT INTO TrainerProfile VALUES(1, 1, 'Arjun', 'vendor1',NULL,NULL,NULL);
+INSERT INTO TrainerProfile VALUES(2, 1, 'Ram', 'vendor2',NULL,NULL,NULL);
+
+
+--AddTrainerProfile
+DELIMITER //
+DROP PROCEDURE IF EXISTS `AddTrainerProfile`//
+CREATE PROCEDURE AddTrainerProfile(OUT pProfileId INT, pReqId INT,pTrainerName VARCHAR(50), pVendorId VARCHAR(20), OUT pStatusCode INT)
+BEGIN
+	DECLARE vCheck INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION SET vCheck=0;
+	SET pStatusCode:=1;
+	SET vCheck:=1;
+	SELECT MAX(ProfileId) INTO pProfileId FROM TrainerProfile;
+	IF pProfileId IS NULL THEN
+		SET pProfileId := 1;
+	ELSE
+		SET pProfileId := pProfileId + 1;
+	END IF;
+	INSERT INTO TrainerProfile(ProfileId, ReqId, TrainerName, VendorId) VALUES(pProfileId, pReqId, pTrainerName, pVendorId);
+	IF vCheck=0 THEN
+		SET pStatusCode:=0;
+	END IF;
+END;//
+
+
+--GetTrainerProfilesAdmin
+DELIMITER //
+DROP PROCEDURE IF EXISTS `GetTrainerProfilesAdmin`//
+CREATE PROCEDURE GetTrainerProfilesAdmin(pReqId INT)
+BEGIN
+	SELECT ProfileId, TrainerName, VendorId, SMEId, Feedback, Rating FROM TrainerProfile ORDER BY ProfileId;
+END//
+--Test
+CALL GetTrainerProfilesAdmin(1);
+
+--GetTrainerProfilesVendor
+DELIMITER //
+DROP PROCEDURE IF EXISTS `GetTrainerProfilesVendor`//
+CREATE PROCEDURE GetTrainerProfilesVendor(pReqId INT, pVendorId VARCHAR(20))
+BEGIN
+	SELECT ProfileId, TrainerName FROM TrainerProfile WHERE ReqId=pReqId AND VendorId=pVendorId ORDER BY ProfileId;
+END//
+--Test
+CALL GetTrainerProfilesVendor(1,'vendor1');
+
+
+--GetTrainerProfilesSME
+DELIMITER //
+DROP PROCEDURE IF EXISTS `GetTrainerProfilesSME`//
+CREATE PROCEDURE GetTrainerProfilesSME(pSMEId VARCHAR(20))
+BEGINs
+	SELECT TR.ReqId, TR.ReqDesc, TP.ProfileId, TP.TrainerName FROM 
+		TrainerReq TR INNER JOIN TrainerProfile TP ON TR.ReqId = TP.ReqId 
+		WHERE TP.SMEId=pSMEId ORDER BY TR.ProfileId;
+END//
+--Test
+CALL GetTrainerProfilesSME('sme1');

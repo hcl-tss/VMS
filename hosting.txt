@@ -7,4 +7,4 @@
       FTP Address : 	FTP.SITE4NOW.NET
       FTP Username : 	vijayragavan-001
       FTP Password : 	(same as your control panel password) hasi.1234
-      FTP Directory 	\
+      FTP Directory:	VMS

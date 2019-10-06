@@ -1,0 +1,124 @@
+﻿@model VMS.Models.TrainerProfile
+@using System.Globalization;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VMS</title>
+
+    <link rel="stylesheet" href="~/Content/home.css" />
+    <link rel="stylesheet" href="~/Content/form.css" />
+    
+
+    <!-- Icons font CSS-->
+    <link href="~/Content/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" media="all">
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+
+    <!-- Vendor CSS-->
+    <link href="~/Content/select2.min.css" rel="stylesheet" media="all">
+    <link href="~/Content/daterangepicker.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="~/Content/main.css" rel="stylesheet" media="all">
+
+</head>
+<body>
+    <div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+        <div class="wrapper wrapper--w790">
+            <div class="card card-5">
+                <div class="card-heading">
+                    <h2 class="title">Add Trainer Profile</h2>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("TrainerProfile", "App", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                    {
+
+                        <!--Profile Id -->
+                        <div class="form-row">
+                            <div class="name">Profile Id</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.ProfileId, new { @class = "input--style-5", @readonly = "true", @autocomplete = "off", @tabindex = "1", @placeholder = "auto-generated" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Req Id -->
+                        <div class="form-row">
+                            <div class="name">Requirement Id</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.ReqId, new { @class = "input--style-5", @readonly = "true", @autocomplete = "off", @tabindex = "2", @placeholder = "auto-generated" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--TrainerName -->
+                        <div class="form-row">
+                            <div class="name">Trainer's Name</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(m => m.TrainerName, new { @class = "input--style-5", @placeholder = "Description", @autocomplete = "off", @tabindex = "3"})
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Profile-->
+                        <div class="form-row">
+                            <div class="name">Photo</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    <input type="file" name="Profile" class="input--style-5" tabindex="36" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Save-->
+                        <div>
+                            <p style='color:red;'> @ViewBag.ErrTryAgain </p>
+                            <button class="btn btn--radius-2 btn--red" type="submit" tabindex="4">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script src='~/Scripts/home.js'></script>
+    <!-- Jquery JS-->
+    <script src="~/Scripts/jquery.min.js" type="0792df477abe7cde08931e1d-text/javascript"></script>
+    <!-- Vendor JS-->
+    <script src="~/Scripts/select2.min.js" type="0792df477abe7cde08931e1d-text/javascript"></script>
+    <script src="~/Scripts/moment.min.js" type="0792df477abe7cde08931e1d-text/javascript"></script>
+    <script src="~/Scripts/daterangepicker.js" type="0792df477abe7cde08931e1d-text/javascript"></script>
+
+    <!-- Main JS-->
+    <script src="~/Scripts/global.js" type="0792df477abe7cde08931e1d-text/javascript"></script>
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13" type="0792df477abe7cde08931e1d-text/javascript"></script>
+    <script type="0792df477abe7cde08931e1d-text/javascript">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+    </script>
+
+    <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/a2bd7673/cloudflare-static/rocket-loader.min.js" data-cf-settings="0792df477abe7cde08931e1d-|49" defer=""></script>
+
+    <script>
+        var profileId = document.getElementById("ProfileId");
+        if (profileId.value == '0') {
+             profileId.value = ''
+        }
+    </script>
+</body>
+</html>

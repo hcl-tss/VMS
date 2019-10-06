@@ -1,0 +1,58 @@
+﻿@model IEnumerable<VMS.Models.TrainerProfile>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VMS</title>
+</head>
+<body>
+    @if (Session["userType"].ToString() == "V")
+    {
+        <p>
+            @Html.ActionLink("Add Profile", "AddTrainerProfile",new { id = @ViewBag.reqID })
+        </p>
+    }
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfileId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReqId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrainerName)
+            </th>
+           
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProfileId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReqId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrainerName)
+            </td>
+            
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

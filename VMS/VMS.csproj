@@ -77,6 +77,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MySql.Data, Version=8.0.15.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -149,9 +150,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="DAL\DBServices.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Login.cs" />
+    <Compile Include="Models\TrainerProfile.cs" />
+    <Compile Include="Models\TrainerReq.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -161,9 +166,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\daterangepicker.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\form.css" />
     <Content Include="Content\hamburgers.min.css" />
+    <Content Include="Content\home.css" />
     <Content Include="Content\icon-font.min.css" />
+    <Content Include="Content\main.css" />
     <Content Include="Content\main1.css" />
+    <Content Include="Content\material-design-iconic-font.min.css" />
     <Content Include="Content\select2.min.css" />
     <Content Include="Content\util1.css" />
     <Content Include="favicon.ico" />
@@ -188,10 +197,13 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\countdowntime.js" />
     <Content Include="Scripts\daterangepicker.js" />
+    <Content Include="Scripts\global.js" />
+    <Content Include="Scripts\home.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -220,10 +232,15 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\App\Login.cshtml" />
+    <Content Include="Views\App\Home.cshtml" />
+    <Content Include="Views\App\ViewTrainerReqs.cshtml" />
+    <Content Include="Views\App\TrainerReqForm.cshtml" />
+    <Content Include="Views\App\ViewTrainerProfilesAdmin.cshtml" />
+    <Content Include="Views\App\ViewTrainerProfilesVendor.cshtml" />
+    <Content Include="Views\App\AddTrainerProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
