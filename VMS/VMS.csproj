@@ -176,6 +176,7 @@
     <Content Include="Content\select2.min.css" />
     <Content Include="Content\util1.css" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -193,6 +194,14 @@
     </Content>
     <Content Include="fonts\poppins\Poppins-Regular.ttf" />
     <Content Include="fonts\poppins\Poppins-Bold.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\Material-Design-Iconic-Font.ttf" />
+    <Content Include="fonts\Material-Design-Iconic-Font.woff" />
+    <Content Include="fonts\Material-Design-Iconic-Font.woff2" />
     <None Include="Properties\PublishProfiles\vms.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\countdowntime.js" />
