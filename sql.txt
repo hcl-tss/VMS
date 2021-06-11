@@ -175,7 +175,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS `GetTrainerProfilesAdmin`//
 CREATE PROCEDURE GetTrainerProfilesAdmin(pReqId INT)
 BEGIN
-	SELECT ProfileId, TrainerName, VendorId, SMEId, Feedback, Rating FROM TrainerProfile ORDER BY ProfileId;
+	SELECT ProfileId, TrainerName, VendorId, SMEId, Feedback, Rating FROM TrainerProfile WHERE ReqId = pReqId ORDER BY ProfileId;
 END//
 --Test
 CALL GetTrainerProfilesAdmin(1);
